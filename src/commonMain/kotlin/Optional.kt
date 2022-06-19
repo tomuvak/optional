@@ -29,3 +29,18 @@ infix fun <T> Optional<T>.orMaybe(defaultProvider: () -> Optional<T>): Optional<
     None -> defaultProvider()
     is Value -> this
 }
+
+fun <T, R> Optional<T>.map(transform: (T) -> R): Optional<R> = when(this) {
+    None -> None
+    is Value -> Value(transform(value))
+}
+
+fun <T, R> Optional<T>.flatMap(transform: (T) -> Optional<R>): Optional<R> = when(this) {
+    None -> None
+    is Value -> transform(value)
+}
+
+fun <T> Optional<Optional<T>>.flatten(): Optional<T> = when(this) {
+    None -> None
+    is Value -> value
+}
