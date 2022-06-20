@@ -11,6 +11,13 @@ see [LICENSE.txt](LICENSE.txt).
   * [Any other multi-platform Kotlin library](#any-other-multi-platform-kotlin-library)
 * [Usage](#usage)
   * [Including the library in a Kotlin project](#including-the-library-in-a-kotlin-project)
+  * [Using the `Optional` type](#using-the-optional-type)
+    * [Basic values](#basic-values)
+    * [Extracting the underlying `value`](#extracting-the-underlying-value)
+    * [The "Elvis" operator](#the-elvis-operator)
+    * [Mapping](#mapping)
+    * [Monadic operations](#monadic-operations)
+  * [Testing](#testing)
 
 ## The Optional type
 The `Optional` type (also known as _Option_ or _Maybe_) represents values which are optional, that is there may or may
@@ -73,8 +80,6 @@ the `Optional` type, and makes no claim regarding any advantage `com.tomuvak.opt
 such libraries.
 
 ## Usage
-This is the initial release, version `0.0.1`. It only contains the `Optional<T>` type definition itself (including
-`None` and `Value<T>`). Further functionality will be added in future versions.
 
 ### Including the library in a Kotlin project
 To add the library from
@@ -118,6 +123,107 @@ repositories they can access), or all the more so in case the token has a wider 
 a token's scope after its creation, so it's possible that at some future point the user might inadvertently grant a
 token which was meant to be restricted more rights).
 
-See this library's own [build.gradle.kts](build.gradle.kts) (and specifically
-[commit e658676](https://github.com/tomuvak/optional/commit/e658676)) for an example of one way this could be done (by
-means of storing private information in a local file which is not source-controlled).
+See [`com.tomuvak.optional-test`](https://github.com/tomuvak/optional-test), and specifically
+[commit 0a7d166](https://github.com/tomuvak/optional-test/commit/0a7d166), for an example of one way this could be done
+(by means of storing private information in a local file which is not source-controlled). Note that that commit was
+accompanied by the creation of a file called `local.properties`, containing two lines like the following:
+
+```properties
+githubUser=<user name>
+githubToken=<personal access token for the user above, with the `read:packages` scope>
+```
+
+### Using the `Optional` type
+
+#### Basic values
+A value of type `Optional<T>` can be either:
+* `Optional.None` (corresponds to `null` when using [nullable types](https://kotlinlang.org/docs/null-safety.html) to
+  model optionals); or
+* an instance of `Optional.Value`, with an underlying value (accessible through the `value` property) of type `T`.
+
+For brevity, one can `import com.tomuvak.optional.Optional.None` and `import com.tomuvak.optional.Optional.Value`, thus
+allowing the use of the unqualified forms `None` and `Value`.
+
+Just like one cannot simply use a value of type `T?` as if its type was `T`, the same is true for values of type
+`Optional<T>`. One can check for there (not) being a value by comparing an `Optional` value (or its type) to `None`,
+e.g. `if (optional == None)`, `if (optional != None)`, `if (optional is None)`, `if (optional !is None)`. Unlike the
+situation with the built-in nullable types, where the compiler accepts code which treats a value of type `T?` as a value
+of type `T` in contexts where it's established that the value is not `null`, establishing that an `Optional` value is
+not `None` is not enough to permit accessing its `value` property. But establishing it is a `Value` is:
+
+```kotlin
+if (optional is Value) {
+    // it is possible (and safe) to use optional.value here
+}
+```
+
+One idiom for using `Optional` values is to use `when`:
+
+```kotlin
+when (optional) {
+    /*is*/ None -> // what to do when there's no value
+    is Value -> // it is possible (and safe) to use optional.value here
+}
+```
+
+#### Extracting the underlying `value`
+To force the extraction of the underlying `value` one can use the `forcedValue` property. It assumes there actually is
+an underlying value and returns it not wrapped by an `Optional`. Of course, this operation throws if called on `None`.
+
+This property is similar to the [`!!` operator](https://kotlinlang.org/docs/null-safety.html#the-operator) for nullable
+types, and its use is similarly discouraged. Some programmers might sometimes find it useful under some circumstances,
+but it is generally advised to use `if` or `when` like above, or the more idiomatic ways to work with `Optional`s
+described below.
+
+#### The "Elvis" operator
+Similarly to the built-in [`?:` operator](https://kotlinlang.org/docs/null-safety.html#elvis-operator) for nullable
+types (known as the ["Elvis" operator](https://en.wikipedia.org/wiki/Elvis_operator)), `optional or default` will take
+the `value` out of `optional` if there is any, but resort to using `default` otherwise. Pass a function/lambda to avoid
+computing the default value unnecessarily:
+`optional or { compute default /* will only be called if optional is None */ }`. Use `orMaybe` instead of `or` when the
+default is itself an `Optional`.
+
+#### Mapping
+As a [functor](https://en.wikipedia.org/wiki/Functor_(functional_programming)), the `Optional` type supports `map`ping:
+
+```kotlin
+Value(3).map { it + 2 } // Value(5)
+None.map { it + 2 } // None
+```
+
+This is similar to the use of `?.let` for nullable types.
+
+#### Monadic operations
+As a [monad](https://en.wikipedia.org/wiki/Monad_(functional_programming)), the `Optional` type supports `flatten`ing
+and `flatMap`ping:
+
+```kotlin
+Value(Value(3)).flatten() // Value(3)
+Value(None).flatten() // None
+None.flatten() // None
+
+Value(4).flatMap { when {
+    it % 2 == 0 -> Value(it / 2)
+    else -> None
+} } // Value(2)
+
+Value(3).flatMap { when {
+    it % 2 == 0 -> Value(it / 2)
+    else -> None
+} } // None
+
+None.flatMap { when {
+    it % 2 == 0 -> Value(it / 2)
+    else -> None
+} } // None
+```
+
+Note the difference from built-in nullable types, where everything is automatically flattened, and there's no
+differentiation between a single level of nullability and nested levels thereof (so `3` is just `3`, without any
+construct parallelling `Value(3)` or `Value(Value(3))`, and `null` is just `null`, with no distinction parallel to the
+distinction between `None` and `Value(None)`).
+
+### Testing
+The sister library [`com.tomuvak.optional-test`](https://github.com/tomuvak/optional-test) provides some utilities
+designed to facilitate testing code which uses the `Optional` type, specifically assertions over values of the
+`Optional` type. [The test suite](src/commonTest/kotlin/OptionalTest.kt) makes use of some of them.
