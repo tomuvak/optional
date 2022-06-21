@@ -97,4 +97,10 @@ class OptionalTest {
         assertEquals(3, it)
         true
     })
+
+    @Test fun asEmptySequence() = assertEquals(emptyList(), None.asSequence().toList())
+    @Test fun asSingletonSequence() = assertEquals(listOf(3), Value(3).asSequence().toList())
+
+    @Test fun toEmptyList() = assertEquals(emptyList(), None.toList())
+    @Test fun toSingletonList() = assertEquals(listOf(3), Value(3).toList())
 }

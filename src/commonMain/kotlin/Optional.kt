@@ -34,3 +34,6 @@ fun <T> Optional<Optional<T>>.flatten(): Optional<T> = switch(None) { it }
 fun <T> Optional<T>.filter(predicate: (T) -> Boolean): Optional<T> = switch(None) { if (predicate(it)) this else None }
 fun <T> Optional<T>.filterNot(predicate: (T) -> Boolean): Optional<T> =
     switch(None) { if (predicate(it)) None else this }
+
+fun <T> Optional<T>.asSequence(): Sequence<T> = sequence { if (this@asSequence is Value) yield(value) }
+fun <T> Optional<T>.toList(): List<T> = asSequence().toList()
