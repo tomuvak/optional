@@ -30,3 +30,7 @@ infix fun <T> Optional<T>.orMaybe(defaultProvider: () -> Optional<T>): Optional<
 fun <T, R> Optional<T>.map(transform: (T) -> R): Optional<R> = switch(None) { Value(transform(it)) }
 fun <T, R> Optional<T>.flatMap(transform: (T) -> Optional<R>): Optional<R> = switch(None, transform)
 fun <T> Optional<Optional<T>>.flatten(): Optional<T> = switch(None) { it }
+
+fun <T> Optional<T>.filter(predicate: (T) -> Boolean): Optional<T> = switch(None) { if (predicate(it)) this else None }
+fun <T> Optional<T>.filterNot(predicate: (T) -> Boolean): Optional<T> =
+    switch(None) { if (predicate(it)) None else this }

@@ -77,4 +77,24 @@ class OptionalTest {
     @Test fun flattensOuterNone() = assertNone(None.flatten<Any?>())
     @Test fun flattensInnerNone() = assertNone(Value(None).flatten())
     @Test fun flattensValue() = assertValue(3, Value(Value(3)).flatten())
+
+    @Test fun filterNone() = assertNone(None.filter { fail("Not supposed to be called") })
+    @Test fun filterFalseValue() = assertNone(Value(3).filter {
+        assertEquals(3, it)
+        false
+    })
+    @Test fun filterTrueValue() = assertValue(3, Value(3).filter {
+        assertEquals(3, it)
+        true
+    })
+
+    @Test fun filterNotNone() = assertNone(None.filterNot { fail("Not supposed to be called") })
+    @Test fun filterNotFalseValue() = assertValue(3, Value(3).filterNot {
+        assertEquals(3, it)
+        false
+    })
+    @Test fun filterNotTrueValue() = assertNone(Value(3).filterNot {
+        assertEquals(3, it)
+        true
+    })
 }

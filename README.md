@@ -17,6 +17,7 @@ see [LICENSE.txt](LICENSE.txt).
     * [The "Elvis" operator](#the-elvis-operator)
     * [Mapping](#mapping)
     * [Monadic operations](#monadic-operations)
+    * [Other operations](#other-operations)
   * [Testing](#testing)
 
 ## The Optional type
@@ -243,6 +244,11 @@ Note the difference from built-in nullable types, where everything is automatica
 differentiation between a single level of nullability and nested levels thereof (so `3` is just `3`, without any
 construct parallelling `Value(3)` or `Value(Value(3))`, and `null` is just `null`, with no distinction parallel to the
 distinction between `None` and `Value(None)`).
+
+#### Other operations
+Similarly to other container types, the `Optional` type supports `filter`ing, transforming a `Value` to `None` in case
+the underlying value does not satisfy a given predicate (or does satisfy the given predicate in the case of
+`filterNot`).
 
 ### Testing
 The sister library [`com.tomuvak.optional-test`](https://github.com/tomuvak/optional-test) provides some utilities
