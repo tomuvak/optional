@@ -22,37 +22,11 @@ fun <T, R> Optional<T>.switch(defaultProvider: () -> R, transform: (T) -> R): R 
 
 fun <T> Optional<T>.runOnValue(action: (T) -> Unit) { if (this is Value) action(value) }
 
-infix fun <T> Optional<T>.or(default: T): T = when (this) {
-    None -> default
-    is Value -> value
-}
+infix fun <T> Optional<T>.or(default: T): T = switch(default) { it }
+infix fun <T> Optional<T>.or(defaultProvider: () -> T): T = switch(defaultProvider) { it }
+infix fun <T> Optional<T>.orMaybe(default: Optional<T>): Optional<T> = switch(default) { this }
+infix fun <T> Optional<T>.orMaybe(defaultProvider: () -> Optional<T>): Optional<T> = switch(defaultProvider) { this }
 
-infix fun <T> Optional<T>.or(defaultProvider: () -> T): T = when (this) {
-    None -> defaultProvider()
-    is Value -> value
-}
-
-infix fun <T> Optional<T>.orMaybe(default: Optional<T>): Optional<T> = when (this) {
-    None -> default
-    is Value -> this
-}
-
-infix fun <T> Optional<T>.orMaybe(defaultProvider: () -> Optional<T>): Optional<T> = when (this) {
-    None -> defaultProvider()
-    is Value -> this
-}
-
-fun <T, R> Optional<T>.map(transform: (T) -> R): Optional<R> = when (this) {
-    None -> None
-    is Value -> Value(transform(value))
-}
-
-fun <T, R> Optional<T>.flatMap(transform: (T) -> Optional<R>): Optional<R> = when (this) {
-    None -> None
-    is Value -> transform(value)
-}
-
-fun <T> Optional<Optional<T>>.flatten(): Optional<T> = when (this) {
-    None -> None
-    is Value -> value
-}
+fun <T, R> Optional<T>.map(transform: (T) -> R): Optional<R> = switch(None) { Value(transform(it)) }
+fun <T, R> Optional<T>.flatMap(transform: (T) -> Optional<R>): Optional<R> = switch(None, transform)
+fun <T> Optional<Optional<T>>.flatten(): Optional<T> = switch(None) { it }
