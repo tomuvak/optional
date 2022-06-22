@@ -20,8 +20,9 @@ see [LICENSE.txt](LICENSE.txt).
   * [Testing](#testing)
 
 ## The Optional type
-The `Optional` type (also known as _Option_ or _Maybe_) represents values which are optional, that is there may or may
-not be an actual value.
+The `Optional` type (also known as _Option_ or _Maybe_) represents values which are optional, that is for any value of
+the `Optional` type there may or may not be an actual underlying value.
+
 More concretely, a value of type `Optional<T>` is either:
 * a (wrapped) value of type `T`; or
 * `None` (= no value).
