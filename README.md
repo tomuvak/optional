@@ -182,10 +182,13 @@ described below.
 #### The "Elvis" operator
 Similarly to the built-in [`?:` operator](https://kotlinlang.org/docs/null-safety.html#elvis-operator) for nullable
 types (known as the ["Elvis" operator](https://en.wikipedia.org/wiki/Elvis_operator)), `optional or default` will take
-the `value` out of `optional` if there is any, but resort to using `default` otherwise. Pass a function/lambda to avoid
-computing the default value unnecessarily:
-`optional or { compute default /* will only be called if optional is None */ }`. Use `orMaybe` instead of `or` when the
-default is itself an `Optional`.
+the `value` out of `optional` if there is any, but resort to using `default` otherwise.
+
+Note that, unlike the case with the built-in `?:` operator, what's right of the `or` will always be evaluated; pass a
+function/lambda to avoid computing the default value unnecessarily:
+`optional or { compute default /* will only be called if optional is None */ }`.
+
+Use `orMaybe` instead of `or` when the default is itself an `Optional`.
 
 #### Mapping
 As a [functor](https://en.wikipedia.org/wiki/Functor_(functional_programming)), the `Optional` type supports `map`ping:
