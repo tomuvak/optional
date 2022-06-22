@@ -142,6 +142,9 @@ A value of type `Optional<T>` can be either:
   model optionals); or
 * an instance of `Optional.Value`, with an underlying value (accessible through the `value` property) of type `T`.
 
+(Note: when `T` is itself a nullable type an `Optional<T>` might be a `Value` and have a `value` of `null`, which is not
+the same as being `None`.)
+
 For brevity, one can `import com.tomuvak.optional.Optional.None` and `import com.tomuvak.optional.Optional.Value`, thus
 allowing the use of the unqualified forms `None` and `Value`.
 
