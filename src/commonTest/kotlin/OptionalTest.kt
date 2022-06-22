@@ -13,6 +13,13 @@ class OptionalTest {
     @Test fun failsToForceNoneValue() { assertFails { None.forcedValue } }
     @Test fun forcesValue() = assertEquals(3, Value(3).forcedValue)
 
+    @Test fun failsToForceNoneValueWithCustomException() {
+        val e = Exception("Some specific exception")
+        assertEquals(e, assertFails { None.forcedValue { e } } )
+    }
+    @Test fun forcesValueWithCustomException() =
+        assertEquals(3, Value(3).forcedValue { fail("Not supposed to be called") })
+
     @Test fun replacesNoneWithDefault() = assertEquals(5, None or 5)
     @Test fun doesNotReplaceValueWithDefault() = assertEquals(3, Value(3) or 5)
 

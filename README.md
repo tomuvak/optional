@@ -179,6 +179,9 @@ types, and its use is similarly discouraged. Some programmers might sometimes fi
 but it is generally advised to use `if` or `when` like above, or the more idiomatic ways to work with `Optional`s
 described below.
 
+To throw a custom exception in case there's no value, use the `forcedValue` function, e.g.
+`optional.forcedValue { CustomException(...) }`, or the [`or` operator](#the-elvis-operator) described below.
+
 #### The "Elvis" operator
 Similarly to the built-in [`?:` operator](https://kotlinlang.org/docs/null-safety.html#elvis-operator) for nullable
 types (known as the ["Elvis" operator](https://en.wikipedia.org/wiki/Elvis_operator)), `optional or default` will take
@@ -187,6 +190,11 @@ the `value` out of `optional` if there is any, but resort to using `default` oth
 Note that, unlike the case with the built-in `?:` operator, what's right of the `or` will always be evaluated; pass a
 function/lambda to avoid computing the default value unnecessarily:
 `optional or { compute default /* will only be called if optional is None */ }`.
+
+This is also useful for throwing in case there's no value: the expression `optional or { error(...) }` evaluates to the
+underlying value if there is any, and throws otherwise; without the braces the expression would throw either way.
+(Another way to extract the underlying value and throw if there isn't any is to use the `forcedValue` property or
+function described [above](#extracting-the-underlying-value).)
 
 Use `orMaybe` instead of `or` when the default is itself an `Optional`.
 

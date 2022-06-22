@@ -9,6 +9,7 @@ sealed class Optional<out T> {
 }
 
 val <T> Optional<T>.forcedValue: T get() = (this as Value).value
+fun <T> Optional<T>.forcedValue(exceptionProvider: () -> Throwable): T = or { throw exceptionProvider() }
 
 infix fun <T> Optional<T>.or(default: T): T = when (this) {
     None -> default
