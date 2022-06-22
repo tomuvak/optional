@@ -11,6 +11,17 @@ sealed class Optional<out T> {
 val <T> Optional<T>.forcedValue: T get() = (this as Value).value
 fun <T> Optional<T>.forcedValue(exceptionProvider: () -> Throwable): T = or { throw exceptionProvider() }
 
+fun <T, R> Optional<T>.switch(default: R, transform: (T) -> R): R = when (this) {
+    None -> default
+    is Value -> transform(value)
+}
+fun <T, R> Optional<T>.switch(defaultProvider: () -> R, transform: (T) -> R): R = when (this) {
+    None -> defaultProvider()
+    is Value -> transform(value)
+}
+
+fun <T> Optional<T>.runOnValue(action: (T) -> Unit) { if (this is Value) action(value) }
+
 infix fun <T> Optional<T>.or(default: T): T = when (this) {
     None -> default
     is Value -> value

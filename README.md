@@ -170,6 +170,12 @@ when (optional) {
 }
 ```
 
+One can also use `optional.runOnValue { value -> do stuff }` to do something with an `Optional`'s value in case there is
+one and not do anything otherwise, or `optional.switch(<in case of None>) { value -> <in case of Value> }` to specify
+what to do and/or which value to compute in case of `None` and in case there is an underlying `value` (note that the
+first parameter – what to do/compute in case of `None` – can be either the value to return or a function/lambda to do
+something and/or return a value).
+
 #### Extracting the underlying `value`
 To force the extraction of the underlying `value` one can use the `forcedValue` property. It assumes there actually is
 an underlying value and returns it not wrapped by an `Optional`. Of course, this operation throws if called on `None`.

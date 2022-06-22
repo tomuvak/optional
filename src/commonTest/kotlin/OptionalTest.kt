@@ -20,6 +20,27 @@ class OptionalTest {
     @Test fun forcesValueWithCustomException() =
         assertEquals(3, Value(3).forcedValue { fail("Not supposed to be called") })
 
+    @Test fun switchWithValueOnNone() = assertEquals(3, None.switch(3) { fail("Not supposed to be called") })
+    @Test fun switchWithValueOnValue() = assertEquals(4, Value(3).switch(5) {
+        assertEquals(3, it)
+        4
+    })
+    @Test fun switchWithProviderOnNone() = assertEquals(3, None.switch({ 3 }) { fail("Not supposed to be called") })
+    @Test fun switchWithProviderOnValue() = assertEquals(4, Value(3).switch({ fail("Not supposed to be called") }) {
+        assertEquals(3, it)
+        4
+    })
+
+    @Test fun doesNotRunOnValueOnNone() = None.runOnValue { fail("Not supposed to be called") }
+    @Test fun runsOnValue() {
+        var numRuns = 0
+        Value(3).runOnValue {
+            assertEquals(3, it)
+            numRuns++
+        }
+        assertEquals(1, numRuns)
+    }
+
     @Test fun replacesNoneWithDefault() = assertEquals(5, None or 5)
     @Test fun doesNotReplaceValueWithDefault() = assertEquals(3, Value(3) or 5)
 
