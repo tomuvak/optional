@@ -24,8 +24,8 @@ The `Optional` type (also known as _Option_ or _Maybe_) represents values which 
 the `Optional` type there may or may not be an actual underlying value.
 
 More concretely, a value of type `Optional<T>` is either:
-* a (wrapped) value of type `T`; or
-* `None` (= no value).
+* `None` (= no value); or
+* `Value(t)` – a (wrapped) value (`t`) of type `T`.
 
 ### Further reading
 * [Wikipedia](https://en.wikipedia.org/wiki/Option_type)
