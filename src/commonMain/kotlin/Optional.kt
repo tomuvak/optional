@@ -10,37 +10,37 @@ sealed class Optional<out T> {
 
 val <T> Optional<T>.forcedValue: T get() = (this as Value).value
 
-infix fun <T> Optional<T>.or(default: T): T = when(this) {
+infix fun <T> Optional<T>.or(default: T): T = when (this) {
     None -> default
     is Value -> value
 }
 
-infix fun <T> Optional<T>.or(defaultProvider: () -> T): T = when(this) {
+infix fun <T> Optional<T>.or(defaultProvider: () -> T): T = when (this) {
     None -> defaultProvider()
     is Value -> value
 }
 
-infix fun <T> Optional<T>.orMaybe(default: Optional<T>): Optional<T> = when(this) {
+infix fun <T> Optional<T>.orMaybe(default: Optional<T>): Optional<T> = when (this) {
     None -> default
     is Value -> this
 }
 
-infix fun <T> Optional<T>.orMaybe(defaultProvider: () -> Optional<T>): Optional<T> = when(this) {
+infix fun <T> Optional<T>.orMaybe(defaultProvider: () -> Optional<T>): Optional<T> = when (this) {
     None -> defaultProvider()
     is Value -> this
 }
 
-fun <T, R> Optional<T>.map(transform: (T) -> R): Optional<R> = when(this) {
+fun <T, R> Optional<T>.map(transform: (T) -> R): Optional<R> = when (this) {
     None -> None
     is Value -> Value(transform(value))
 }
 
-fun <T, R> Optional<T>.flatMap(transform: (T) -> Optional<R>): Optional<R> = when(this) {
+fun <T, R> Optional<T>.flatMap(transform: (T) -> Optional<R>): Optional<R> = when (this) {
     None -> None
     is Value -> transform(value)
 }
 
-fun <T> Optional<Optional<T>>.flatten(): Optional<T> = when(this) {
+fun <T> Optional<Optional<T>>.flatten(): Optional<T> = when (this) {
     None -> None
     is Value -> value
 }
