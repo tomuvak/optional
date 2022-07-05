@@ -14,6 +14,10 @@ class SequencesTest {
     @Test fun valuesOfMixedOptionals() = sequenceOf(Value(1), None, None, Value(2), None, Value(3), None).test(
         { values() }
     ) { then(1, 2, 3) }
+    @Test fun valuesOfMixedOptionalNullables() =
+        sequenceOf(Value(1), None, Value(null), Value(2), Value(null), Value(3), None).test(
+            { values() }
+        ) { then(1, null, 2, null, 3) }
     @Test fun valuesComputeLazily() = sequence {
         yield(Value(1))
         yield(None)
@@ -38,6 +42,10 @@ class SequencesTest {
         sequenceOf(Value(1), Value(2), Value(3), None, Value(4), None, Value(5), Value(6)).test(
             { valuesUntilFirstNone() }
         ) { then(1, 2, 3) }
+    @Test fun valuesUntilFirstNoneWhenMixedOptionalNullables() =
+        sequenceOf(Value(1), Value(null), Value(2), None, Value(3), Value(4)).test(
+            { valuesUntilFirstNone() }
+        ) { then(1, null, 2) }
     @Test fun valuesUntilFirstNoneComputeLazily() = sequence {
         yield(Value(1))
         yield(Value(2))
