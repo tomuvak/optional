@@ -54,7 +54,7 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
-                implementation("com.tomuvak.optional-test:optional-test:0.0.1")
+                implementation("com.tomuvak.optional-test:optional-test:0.0.2")
             }
         }
         val jvmMain by getting
