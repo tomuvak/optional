@@ -68,8 +68,8 @@ when the distinction between having no value and having a value of `null` is _re
 cases `Optional` seems to be the better model.
 
 Note also that it is possible to use nested types with a mix of `Optional`s and nullable types. In cases where a `T??`
-type distinct from `T?` would be nice, alternatives to consider include `Optional<Optional<T>>`, `Optional<T?>` and
-`Optional<T>?`.
+type distinct from `T?` would have been nice, alternatives to consider include `Optional<Optional<T>>`, `Optional<T?>`
+and `Optional<T>?`.
 
 ### Java's [java.util.Optional](https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html)
 Regardless of any difference or similarity in functionality or features, one major distinguishing factor between
