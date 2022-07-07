@@ -10,6 +10,7 @@ see [LICENSE.txt](LICENSE.txt).
   * [Java's java.util.optional](#javas-javautiloptional)
   * [Any other multi-platform Kotlin library](#any-other-multi-platform-kotlin-library)
 * [Usage](#usage)
+  * [`com.tomuvak.optional-type` vs `com.tomuvak.optional`](#comtomuvakoptional-type-vs-comtomuvakoptional)
   * [Including the library in a Kotlin project](#including-the-library-in-a-kotlin-project)
   * [Using the `Optional` type](#using-the-optional-type)
     * [Basic values](#basic-values)
@@ -83,6 +84,19 @@ such libraries.
 
 ## Usage
 
+### `com.tomuvak.optional-type` vs `com.tomuvak.optional`
+For technical reasons, the actual definition of the `Optional` type itself has been extracted to a separate library,
+[`com.tomuvak.optional-type`]. Users interested solely in the type definition should use that library alone, but that's
+an unlikely use case. Anyone wanting to use the type as well as added functionality should include a dependency on both
+libraries, as detailed [below](#including-the-library-in-a-kotlin-project).
+
+(The reason for the extraction is that the otherwise _almost_ circular dependency – [`com.tomuvak.optional-test`]
+depending on this library, with this library depending back on it for tests – caused IntelliJ IDEA to _unjustly_
+complain that `Cannot access class 'com.tomuvak.optional.Optional'. Check your module classpath for missing or
+conflicting dependencies` on call sites to functions from `com.tomuvak.optional-test`. This extraction does give users
+the option to use `com.tomuvak.optional-type` on its own, but most often when using the `Optional` type some further
+functionality that this library provides is desired.)
+
 ### Including the library in a Kotlin project
 To add the library from
 [GitHub Packages](https://docs.github.com/en/packages/learn-github-packages/introduction-to-github-packages), a
@@ -100,13 +114,14 @@ inside the `repositories { ... }` block in the project's `build.gradle.kts` file
     }
 ```
 
-and the dependency should be declared for the relevant source set(s) inside the relevant `dependencies { ... }` block(s)
-inside the `sourceSet { ... }` block, e.g.
+and the dependency (on both [`com.tomuvak.optional-type`] and on this library) should be declared for the relevant
+source set(s) inside the relevant `dependencies { ... }` block(s) inside the `sourceSet { ... }` block, e.g.
 
 ```kotlin
         val commonMain by getting {
             dependencies {
-                implementation("com.tomuvak.optional:optional:0.0.1")
+                implementation("com.tomuvak.optional-type:optional-type:0.0.1")
+                implementation("com.tomuvak.optional:optional:0.0.4")
             }
         }
 ```
@@ -125,10 +140,9 @@ repositories they can access), or all the more so in case the token has a wider 
 a token's scope after its creation, so it's possible that at some future point the user might inadvertently grant a
 token which was meant to be restricted more rights).
 
-See [`com.tomuvak.optional-test`](https://github.com/tomuvak/optional-test), and specifically
-[commit 0a7d166](https://github.com/tomuvak/optional-test/commit/0a7d166), for an example of one way this could be done
-(by means of storing private information in a local file which is not source-controlled). Note that that commit was
-accompanied by the creation of a file called `local.properties`, containing two lines like the following:
+See this library's own [Gradle script](build.gradle.kts) for an example of one way this could be done by means of
+storing private information in a local file which is not source-controlled. In this case the file – which is Git-ignored
+– is called `local.properties`, and it includes lines like the following:
 
 ```properties
 githubUser=<user name>
@@ -251,6 +265,9 @@ the underlying value does not satisfy a given predicate (or does satisfy the giv
 `filterNot`).
 
 ### Testing
-The sister library [`com.tomuvak.optional-test`](https://github.com/tomuvak/optional-test) provides some utilities
+The sister library [`com.tomuvak.optional-test`] provides some utilities
 designed to facilitate testing code which uses the `Optional` type, specifically assertions over values of the
 `Optional` type. [The test suite](src/commonTest/kotlin/OptionalTest.kt) makes use of some of them.
+
+[`com.tomuvak.optional-type`]: https://github.com/tomuvak/optional-type
+[`com.tomuvak.optional-test`]: https://github.com/tomuvak/optional-test
