@@ -21,14 +21,3 @@ infix fun <T> Optional<T>.or(default: T): T = switch(default) { it }
 infix fun <T> Optional<T>.or(defaultProvider: () -> T): T = switch(defaultProvider) { it }
 infix fun <T> Optional<T>.orMaybe(default: Optional<T>): Optional<T> = switch(default) { this }
 infix fun <T> Optional<T>.orMaybe(defaultProvider: () -> Optional<T>): Optional<T> = switch(defaultProvider) { this }
-
-fun <T, R> Optional<T>.map(transform: (T) -> R): Optional<R> = switch(None) { Value(transform(it)) }
-fun <T, R> Optional<T>.flatMap(transform: (T) -> Optional<R>): Optional<R> = switch(None, transform)
-fun <T> Optional<Optional<T>>.flatten(): Optional<T> = switch(None) { it }
-
-fun <T> Optional<T>.filter(predicate: (T) -> Boolean): Optional<T> = switch(None) { if (predicate(it)) this else None }
-fun <T> Optional<T>.filterNot(predicate: (T) -> Boolean): Optional<T> =
-    switch(None) { if (predicate(it)) None else this }
-
-fun <T> Optional<T>.asSequence(): Sequence<T> = sequence { if (this@asSequence is Value) yield(value) }
-fun <T> Optional<T>.toList(): List<T> = asSequence().toList()
