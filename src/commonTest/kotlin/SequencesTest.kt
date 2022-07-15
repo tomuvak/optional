@@ -2,6 +2,8 @@ package com.tomuvak.optional
 
 import com.tomuvak.optional.Optional.None
 import com.tomuvak.optional.Optional.Value
+import com.tomuvak.optional.test.assertNone
+import com.tomuvak.optional.test.assertValue
 import com.tomuvak.testing.assertions.assertValues
 import com.tomuvak.testing.assertions.testIntermediateOperation
 import kotlin.test.Test
@@ -56,4 +58,21 @@ class SequencesTest {
         yield(Value(3))
         fail("Not supposed to be attempted")
     }.testIntermediateOperation({ valuesUntilFirstNone() }) { take(3).assertValues(1, 2, 3) }
+
+    @Test fun valuesIfAllWhenEmpty() = assertValue(
+        emptyList(),
+        emptySequence<Optional<Int>>().constrainOnce().valuesIfAll()
+    )
+    @Test fun valuesIfAllWhenAll() = assertValue(
+        listOf(1, 2, 3),
+        sequenceOf(Value(1), Value(2), Value(3)).constrainOnce().valuesIfAll()
+    )
+    @Test fun valuesIfAllWhenNotAll() = assertNone(sequenceOf(Value(1), None, Value(2)).constrainOnce().valuesIfAll())
+    @Test fun valuesIfAllDoesNotEnumerateMoreThanNeeded() = assertNone(
+        sequence {
+            yield(Value(1))
+            yield(None)
+            fail("Not supposed to enumerate thus far")
+        }.constrainOnce().valuesIfAll()
+    )
 }
