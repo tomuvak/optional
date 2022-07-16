@@ -2,7 +2,7 @@ package com.tomuvak.optional
 
 import com.tomuvak.optional.test.assertNone
 import com.tomuvak.optional.test.assertValue
-import com.tomuvak.testing.assertions.mootPredicate
+import com.tomuvak.testing.assertions.mootFunction
 import com.tomuvak.testing.assertions.testLazyTerminalOperation
 import com.tomuvak.testing.assertions.testTerminalOperation
 import kotlin.test.Test
@@ -16,7 +16,7 @@ class SequencesTest {
         sequenceOf(null).testLazyTerminalOperation({ firstOrNone() }) { assertValue(null, it) }
 
     @Test fun firstOrNoneWithPredicateWhenEmpty() =
-        emptySequence<Int>().testTerminalOperation({ firstOrNone(mootPredicate) }, ::assertNone)
+        emptySequence<Int>().testTerminalOperation({ firstOrNone(mootFunction) }, ::assertNone)
     @Test fun firstOrNoneWithPredicateWhenNone() {
         val testedElements = mutableListOf<Int>()
         sequenceOf(1, 2, 3).testTerminalOperation({ firstOrNone {
@@ -38,7 +38,7 @@ class SequencesTest {
         sequenceOf(1, 2, null).testTerminalOperation({ lastOrNone() }) { assertValue(null, it) }
 
     @Test fun lastOrNoneWithPredicateWhenEmpty() =
-        emptySequence<Int>().testTerminalOperation({ lastOrNone(mootPredicate) }, ::assertNone)
+        emptySequence<Int>().testTerminalOperation({ lastOrNone(mootFunction) }, ::assertNone)
     @Test fun lastOrNoneWithPredicateWhenNone() {
         val testedElements = mutableListOf<Int>()
         sequenceOf(1, 2, 3).testTerminalOperation({ lastOrNone {
@@ -75,7 +75,7 @@ class SequencesTest {
     })
 
     @Test fun singleOrNoneIfNoneReturnsNoneWhenEmpty() =
-        emptySequence<Int>().testTerminalOperation({ singleOrNoneIfNone(mootPredicate) }, ::assertNone)
+        emptySequence<Int>().testTerminalOperation({ singleOrNoneIfNone(mootFunction) }, ::assertNone)
     @Test fun singleOrNoneIfNoneReturnsNoneWhenNone() {
         val testedElements = mutableListOf<Int>()
         sequenceOf(1, 2, 3).testTerminalOperation({ singleOrNoneIfNone {
@@ -115,7 +115,7 @@ class SequencesTest {
         sequenceOf(3, 3).testLazyTerminalOperation({ singleOrNoneIfMultiple() }, ::assertNone)
 
     @Test fun singleOrNoneIfMultipleWithPredicateThrowsWhenEmpty() = emptySequence<Int>().testTerminalOperation({
-        assertFailsWith<NoSuchElementException> { singleOrNoneIfMultiple(mootPredicate) }
+        assertFailsWith<NoSuchElementException> { singleOrNoneIfMultiple(mootFunction) }
     })
     @Test fun singleOrNoneIfMultipleWithPredicateThrowsWhenNone() {
         val testedElements = mutableListOf<Int>()
@@ -156,7 +156,7 @@ class SequencesTest {
         sequenceOf(3, 3).testLazyTerminalOperation({ singleOrNoneIfEmptyOrMultiple() }, ::assertNone)
 
     @Test fun singleOrNoneIfNoneOrMultipleReturnsNoneWhenEmpty() =
-        emptySequence<Int>().testTerminalOperation({ singleOrNoneIfNoneOrMultiple(mootPredicate) }, ::assertNone)
+        emptySequence<Int>().testTerminalOperation({ singleOrNoneIfNoneOrMultiple(mootFunction) }, ::assertNone)
     @Test fun singleOrNoneIfNoneOrMultipleReturnsNoneWhenNone() {
         val testedElements = mutableListOf<Int>()
         sequenceOf(1, 2, 3).testTerminalOperation({ singleOrNoneIfNoneOrMultiple {
@@ -192,7 +192,7 @@ class SequencesTest {
         sequenceOf(null).testLazyTerminalOperation({ singleNoVerifyOrNone() }) { assertValue(null, it) }
 
     @Test fun singleNoVerifyOrNoneWithPredicateWhenEmpty() =
-        emptySequence<Int>().testTerminalOperation({ singleNoVerifyOrNone(mootPredicate) }, ::assertNone)
+        emptySequence<Int>().testTerminalOperation({ singleNoVerifyOrNone(mootFunction) }, ::assertNone)
     @Test fun singleNoVerifyOrNoneWithPredicateWhenNone() {
         val testedElements = mutableListOf<Int>()
         sequenceOf(1, 2, 3).testTerminalOperation({ singleNoVerifyOrNone {
