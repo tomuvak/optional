@@ -4,6 +4,7 @@ import com.tomuvak.optional.Optional.None
 import com.tomuvak.optional.Optional.Value
 import com.tomuvak.optional.test.assertNone
 import com.tomuvak.optional.test.assertValue
+import com.tomuvak.testing.assertions.MockFunction
 import com.tomuvak.testing.assertions.mootFunction
 import com.tomuvak.testing.assertions.mootProvider
 import kotlin.test.Test
@@ -33,12 +34,9 @@ class BasicTest {
 
     @Test fun doesNotRunOnValueOnNone() = None.runOnValue(mootFunction)
     @Test fun runsOnValue() {
-        var numRuns = 0
-        Value(3).runOnValue {
-            assertEquals(3, it)
-            numRuns++
-        }
-        assertEquals(1, numRuns)
+        val mockFunction = MockFunction<Int, Unit> {}
+        Value(3).runOnValue(mockFunction::invoke)
+        assertEquals(listOf(3), mockFunction.calls)
     }
 
     @Test fun replacesNoneWithDefault() = assertEquals(5, None or 5)
