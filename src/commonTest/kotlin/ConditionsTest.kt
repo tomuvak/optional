@@ -3,6 +3,7 @@ package com.tomuvak.optional
 import com.tomuvak.optional.test.assertNone
 import com.tomuvak.optional.test.assertValue
 import com.tomuvak.testing.assertions.mootProvider
+import com.tomuvak.testing.assertions.scriptedFunction
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -20,24 +21,6 @@ class ConditionsTest {
         assertEquals(1, numCalls)
     }
 
-    @Test fun ifSatisfiesWhenDoesNotSatisfy() {
-        val testedArguments = mutableListOf<Int>()
-        assertNone(3.ifSatisfies {
-            testedArguments.add(it)
-            false
-        })
-        assertEquals(listOf(3), testedArguments)
-    }
-
-    @Test fun ifSatisfiesWhenSatisfies() {
-        val testedArguments = mutableListOf<Int>()
-        assertValue(
-            3,
-            3.ifSatisfies {
-                testedArguments.add(it)
-                true
-            }
-        )
-        assertEquals(listOf(3), testedArguments)
-    }
+    @Test fun ifSatisfiesWhenDoesNotSatisfy() = assertNone(3.ifSatisfies(scriptedFunction(3 to false)))
+    @Test fun ifSatisfiesWhenSatisfies() = assertValue(3, 3.ifSatisfies(scriptedFunction(3 to true)))
 }

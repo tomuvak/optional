@@ -5,49 +5,29 @@ import com.tomuvak.optional.Optional.Value
 import com.tomuvak.optional.test.assertNone
 import com.tomuvak.optional.test.assertValue
 import com.tomuvak.testing.assertions.mootFunction
+import com.tomuvak.testing.assertions.scriptedFunction
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class ContainerTest {
     @Test fun mapsNone() = assertNone(None.map(mootFunction))
-    @Test fun mapsValue() = assertValue(5, Value(3).map {
-        assertEquals(3, it)
-        5
-    })
+    @Test fun mapsValue() = assertValue(5, Value(3).map(scriptedFunction(3 to 5)))
 
     @Test fun flatMapsNone() = assertNone(None.flatMap<Int, String>(mootFunction))
-    @Test fun flatMapsToNone() = assertNone(Value(3).flatMap {
-        assertEquals(3, it)
-        None
-    })
-    @Test fun flatMapsToValue() = assertValue("success", Value(3).flatMap {
-        assertEquals(3, it)
-        Value("success")
-    })
+    @Test fun flatMapsToNone() = assertNone(Value(3).flatMap(scriptedFunction(3 to None)))
+    @Test fun flatMapsToValue() = assertValue("success", Value(3).flatMap(scriptedFunction(3 to Value("success"))))
 
     @Test fun flattensOuterNone() = assertNone(None.flatten<Any?>())
     @Test fun flattensInnerNone() = assertNone(Value(None).flatten())
     @Test fun flattensValue() = assertValue(3, Value(Value(3)).flatten())
 
     @Test fun filterNone() = assertNone(None.filter(mootFunction))
-    @Test fun filterFalseValue() = assertNone(Value(3).filter {
-        assertEquals(3, it)
-        false
-    })
-    @Test fun filterTrueValue() = assertValue(3, Value(3).filter {
-        assertEquals(3, it)
-        true
-    })
+    @Test fun filterFalseValue() = assertNone(Value(3).filter(scriptedFunction(3 to false)))
+    @Test fun filterTrueValue() = assertValue(3, Value(3).filter(scriptedFunction(3 to true)))
 
     @Test fun filterNotNone() = assertNone(None.filterNot(mootFunction))
-    @Test fun filterNotFalseValue() = assertValue(3, Value(3).filterNot {
-        assertEquals(3, it)
-        false
-    })
-    @Test fun filterNotTrueValue() = assertNone(Value(3).filterNot {
-        assertEquals(3, it)
-        true
-    })
+    @Test fun filterNotFalseValue() = assertValue(3, Value(3).filterNot(scriptedFunction(3 to false)))
+    @Test fun filterNotTrueValue() = assertNone(Value(3).filterNot(scriptedFunction(3 to true)))
 
     @Test fun asEmptySequence() = assertEquals(emptyList(), None.asSequence().toList())
     @Test fun asSingletonSequence() = assertEquals(listOf(3), Value(3).asSequence().toList())

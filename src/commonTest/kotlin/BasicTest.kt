@@ -7,6 +7,7 @@ import com.tomuvak.optional.test.assertValue
 import com.tomuvak.testing.assertions.MockFunction
 import com.tomuvak.testing.assertions.mootFunction
 import com.tomuvak.testing.assertions.mootProvider
+import com.tomuvak.testing.assertions.scriptedFunction
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
@@ -22,15 +23,9 @@ class BasicTest {
     @Test fun forcesValueWithCustomException() = assertEquals(3, Value(3).forcedValue(mootProvider))
 
     @Test fun switchWithValueOnNone() = assertEquals(3, None.switch(3, mootFunction))
-    @Test fun switchWithValueOnValue() = assertEquals(4, Value(3).switch(5) {
-        assertEquals(3, it)
-        4
-    })
+    @Test fun switchWithValueOnValue() = assertEquals(4, Value(3).switch(5, scriptedFunction(3 to 4)))
     @Test fun switchWithProviderOnNone() = assertEquals(3, None.switch({ 3 }, mootFunction))
-    @Test fun switchWithProviderOnValue() = assertEquals(4, Value(3).switch(mootFunction) {
-        assertEquals(3, it)
-        4
-    })
+    @Test fun switchWithProviderOnValue() = assertEquals(4, Value(3).switch(mootFunction, scriptedFunction(3 to 4)))
 
     @Test fun doesNotRunOnValueOnNone() = None.runOnValue(mootFunction)
     @Test fun runsOnValue() {
