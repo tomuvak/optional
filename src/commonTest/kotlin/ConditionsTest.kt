@@ -19,4 +19,25 @@ class ConditionsTest {
         })
         assertEquals(1, numCalls)
     }
+
+    @Test fun ifSatisfiesWhenDoesNotSatisfy() {
+        val testedArguments = mutableListOf<Int>()
+        assertNone(3.ifSatisfies {
+            testedArguments.add(it)
+            false
+        })
+        assertEquals(listOf(3), testedArguments)
+    }
+
+    @Test fun ifSatisfiesWhenSatisfies() {
+        val testedArguments = mutableListOf<Int>()
+        assertValue(
+            3,
+            3.ifSatisfies {
+                testedArguments.add(it)
+                true
+            }
+        )
+        assertEquals(listOf(3), testedArguments)
+    }
 }
