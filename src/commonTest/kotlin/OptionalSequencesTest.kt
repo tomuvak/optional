@@ -7,7 +7,7 @@ import com.tomuvak.optional.test.assertValue
 import com.tomuvak.testing.assertions.*
 import kotlin.test.Test
 
-class SequencesTest {
+class OptionalSequencesTest {
     @Test fun valuesOfEmptySequence() =
         emptySequence<Optional<Int>>().testIntermediateOperation({ values() }) { assertValues() }
     @Test fun valuesOfSingletonNone() = sequenceOf(None).testIntermediateOperation({ values() }) { assertValues() }
