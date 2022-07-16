@@ -69,3 +69,31 @@ fun <T> Sequence<T>.lastOrNone(predicate: (T) -> Boolean): Optional<T> {
         }
     return found.then @Suppress("UNCHECKED_CAST") { ret as T }
 }
+
+/**
+ * Returns the single element in the receiver sequence [this] wrapped in a [Value], or [None] if the sequence is empty.
+ * Not supposed to be called on a sequence with more than one element – but this function makes no effort to verify that
+ * that's not the case.
+ *
+ * This operation is _terminal_.
+ *
+ * This is equivalent to [firstOrNone], but signals to the reader of calling code that the point is not to take the
+ * _first_ element (of potentially multiple elements), but rather the _only_ element (where the fact that there can't be
+ * multiple elements has somehow been established prior to the call).
+ */
+fun <T> Sequence<T>.singleNoVerifyOrNone(): Optional<T> = firstOrNone()
+
+/**
+ * Returns the single element in the receiver sequence [this] which satisfies the given [predicate] wrapped in a
+ * [Value], or [None] if there is no element in the sequence which satisfies the predicate. Not supposed to be called on
+ * a sequence with more than one element satisfying the predicate – but this function makes no effort to verify that
+ * that's not the case.
+ *
+ * This operation is _terminal_.
+ *
+ * This is equivalent to [firstOrNone], but signals to the reader of calling code that the point is not to take the
+ * _first_ element (of potentially multiple elements) which satisfies the predicate, but rather the _only_ element which
+ * does (where the fact that there can't be multiple elements satisfying the predicate has somehow been established
+ * prior to the call).
+ */
+fun <T> Sequence<T>.singleNoVerifyOrNone(predicate: (T) -> Boolean): Optional<T> = firstOrNone(predicate)

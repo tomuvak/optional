@@ -62,4 +62,29 @@ class SequencesTest {
         } }) { assertValue(null, it) }
         assertEquals(listOf(1, 2, 3, null, 5), testedElements)
     }
+
+    @Test fun singleNoVerifyOrNoneWhenEmpty() =
+        emptySequence<Int>().testTerminalOperation({ singleNoVerifyOrNone() }, ::assertNone)
+    @Test fun singleNoVerifyOrNoneWhenValue() =
+        sequenceOf(3).testLazyTerminalOperation({ singleNoVerifyOrNone() }) { assertValue(3, it) }
+    @Test fun singleNoVerifyOrNoneWhenNullValue() =
+        sequenceOf(null).testLazyTerminalOperation({ singleNoVerifyOrNone() }) { assertValue(null, it) }
+
+    @Test fun singleNoVerifyOrNoneWithPredicateWhenEmpty() =
+        emptySequence<Int>().testTerminalOperation({ singleNoVerifyOrNone(mootPredicate) }, ::assertNone)
+    @Test fun singleNoVerifyOrNoneWithPredicateWhenNone() {
+        val testedElements = mutableListOf<Int>()
+        sequenceOf(1, 2, 3).testTerminalOperation({ singleNoVerifyOrNone {
+            testedElements.add(it)
+            false
+        } }, ::assertNone)
+        assertEquals(listOf(1, 2, 3), testedElements)
+    }
+    @Test fun singleNoVerifyOrNoneWithPredicateWhenMatchingValue() = sequenceOf(1, 2, 3).testLazyTerminalOperation(
+        { singleNoVerifyOrNone { it == 3 } }
+    ) { assertValue(3, it) }
+    @Test fun singleNoVerifyOrNoneWithPredicateWhenMatchingNullValue() =
+        sequenceOf(1, 2, null).testLazyTerminalOperation({ singleNoVerifyOrNone { it == null } }) {
+            assertValue(null, it)
+        }
 }
