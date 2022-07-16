@@ -4,10 +4,8 @@ import com.tomuvak.optional.Optional.None
 import com.tomuvak.optional.Optional.Value
 import com.tomuvak.optional.test.assertNone
 import com.tomuvak.optional.test.assertValue
-import com.tomuvak.testing.assertions.assertValues
-import com.tomuvak.testing.assertions.testIntermediateOperation
+import com.tomuvak.testing.assertions.*
 import kotlin.test.Test
-import kotlin.test.fail
 
 class SequencesTest {
     @Test fun valuesOfEmptySequence() =
@@ -23,56 +21,39 @@ class SequencesTest {
         sequenceOf(Value(1), None, Value(null), Value(2), Value(null), Value(3), None).testIntermediateOperation(
             { values() }
         ) { assertValues(1, null, 2, null, 3) }
-    @Test fun valuesComputeLazily() = sequence {
-        yield(Value(1))
-        yield(None)
-        yield(Value(2))
-        yield(Value(3))
-        fail("Not supposed to be attempted")
-    }.testIntermediateOperation({ values() }) { take(3).assertValues(1, 2, 3) }
+    @Test fun valuesComputeLazily() = sequenceOf(Value(1), None, Value(2), Value(3)).testLazyIntermediateOperation({
+        values()
+    }) { assertStartsWith(1, 2, 3) }
 
     @Test fun valuesUntilFirstNoneOfEmptySequence() =
         emptySequence<Optional<Int>>().testIntermediateOperation({ valuesUntilFirstNone() }) { assertValues() }
-    @Test fun valuesUntilFirstNoneOfSingletonNone() =
-        sequenceOf(None).testIntermediateOperation({ valuesUntilFirstNone() }) { assertValues() }
+    @Test fun valuesUntilFirstNoneWhenStartingWithNone() = sequenceOf(None).testLazyIntermediateOperation({
+        valuesUntilFirstNone()
+    }) { assertValues() }
     @Test fun valuesUntilFirstNoneOfSingletonValue() =
         sequenceOf(Value(3)).testIntermediateOperation({ valuesUntilFirstNone() }) { assertValues(3) }
-    @Test fun valuesUntilFirstNoneWhenStartingWithNone() = sequence {
-        yield(None)
-        fail("Not supposed to be attempted")
-    }.testIntermediateOperation({ valuesUntilFirstNone() }) { assertValues() }
     @Test fun valuesUntilFirstNoneWhenNoNones() = sequenceOf(Value(1), Value(2), Value(3)).testIntermediateOperation(
         { valuesUntilFirstNone() }
     ) { assertValues(1, 2, 3) }
     @Test fun valuesUntilFirstNoneWhenMixedOptionals() =
-        sequenceOf(Value(1), Value(2), Value(3), None, Value(4), None, Value(5), Value(6)).testIntermediateOperation(
+        sequenceOf(Value(1), Value(2), Value(3), None).testLazyIntermediateOperation(
             { valuesUntilFirstNone() }
         ) { assertValues(1, 2, 3) }
     @Test fun valuesUntilFirstNoneWhenMixedOptionalNullables() =
-        sequenceOf(Value(1), Value(null), Value(2), None, Value(3), Value(4)).testIntermediateOperation(
+        sequenceOf(Value(1), Value(null), Value(2), None).testLazyIntermediateOperation(
             { valuesUntilFirstNone() }
         ) { assertValues(1, null, 2) }
-    @Test fun valuesUntilFirstNoneComputeLazily() = sequence {
-        yield(Value(1))
-        yield(Value(2))
-        yield(Value(3))
-        fail("Not supposed to be attempted")
-    }.testIntermediateOperation({ valuesUntilFirstNone() }) { take(3).assertValues(1, 2, 3) }
+    @Test fun valuesUntilFirstNoneComputeLazily() =
+        sequenceOf(Value(1), Value(2), Value(3)).testLazyIntermediateOperation({ valuesUntilFirstNone() }) {
+            assertStartsWith(1, 2, 3)
+        }
 
-    @Test fun valuesIfAllWhenEmpty() = assertValue(
-        emptyList(),
-        emptySequence<Optional<Int>>().constrainOnce().valuesIfAll()
-    )
-    @Test fun valuesIfAllWhenAll() = assertValue(
-        listOf(1, 2, 3),
-        sequenceOf(Value(1), Value(2), Value(3)).constrainOnce().valuesIfAll()
-    )
-    @Test fun valuesIfAllWhenNotAll() = assertNone(sequenceOf(Value(1), None, Value(2)).constrainOnce().valuesIfAll())
-    @Test fun valuesIfAllDoesNotEnumerateMoreThanNeeded() = assertNone(
-        sequence {
-            yield(Value(1))
-            yield(None)
-            fail("Not supposed to enumerate thus far")
-        }.constrainOnce().valuesIfAll()
-    )
+    @Test fun valuesIfAllWhenEmpty() = emptySequence<Optional<Int>>().testTerminalOperation({ valuesIfAll() }) {
+        assertValue(emptyList(), it)
+    }
+    @Test fun valuesIfAllWhenAll() = sequenceOf(Value(1), Value(2), Value(3)).testTerminalOperation({ valuesIfAll() }) {
+        assertValue(listOf(1, 2, 3), it)
+    }
+    @Test fun valuesIfAllWhenNotAll() =
+        sequenceOf(Value(1), None).testLazyTerminalOperation({ valuesIfAll() }, ::assertNone)
 }
