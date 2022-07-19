@@ -121,7 +121,7 @@ source set(s) inside the relevant `dependencies { ... }` block(s) inside the `so
         val commonMain by getting {
             dependencies {
                 implementation("com.tomuvak.optional-type:optional-type:0.0.1")
-                implementation("com.tomuvak.optional:optional:0.0.4")
+                implementation("com.tomuvak.optional:optional:0.0.5")
             }
         }
 ```
