@@ -28,14 +28,12 @@ fun <T> Sequence<T>.singleOrNoneIfEmpty(): Optional<T> {
  * This operation is _terminal_.
  */
 fun <T> Sequence<T>.singleOrNoneIfNone(predicate: (T) -> Boolean): Optional<T> {
-    var ret: T? = null
-    var found = false
+    var ret: Optional<T> = None
     for (element in this) if (predicate(element)) {
-        if (found) throw IllegalArgumentException("Sequence contains more than one matching element.")
-        found = true
-        ret = element
+        if (ret != None) throw IllegalArgumentException("Sequence contains more than one matching element.")
+        ret = Value(element)
     }
-    return found.then @Suppress("UNCHECKED_CAST") { ret as T }
+    return ret
 }
 
 /**
@@ -62,15 +60,13 @@ fun <T> Sequence<T>.singleOrNoneIfMultiple(): Optional<T> {
  * This operation is _terminal_.
  */
 fun <T> Sequence<T>.singleOrNoneIfMultiple(predicate: (T) -> Boolean): Optional<T> {
-    var ret: T? = null
-    var found = false
+    var ret: Optional<T> = None
     for (element in this) if (predicate(element)) {
-        if (found) return None
-        found = true
-        ret = element
+        if (ret != None) return None
+        ret = Value(element)
     }
-    if (!found) throw NoSuchElementException("Sequence contains no element matching the predicate.")
-    @Suppress("UNCHECKED_CAST") return Value(ret as T)
+    if (ret == None) throw NoSuchElementException("Sequence contains no element matching the predicate.")
+    return ret
 }
 
 /**
@@ -101,12 +97,10 @@ fun <T> Sequence<T>.singleOrNoneIfEmptyOrMultiple(): Optional<T> {
  * there are either no or multiple elements satisfying it.
  */
 fun <T> Sequence<T>.singleOrNoneIfNoneOrMultiple(predicate: (T) -> Boolean): Optional<T> {
-    var ret: T? = null
-    var found = false
+    var ret: Optional<T> = None
     for (element in this) if (predicate(element)) {
-        if (found) return None
-        found = true
-        ret = element
+        if (ret != None) return None
+        ret = Value(element)
     }
-    return found.then @Suppress("UNCHECKED_CAST") { ret as T }
+    return ret
 }

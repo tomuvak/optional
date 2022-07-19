@@ -42,6 +42,11 @@ fun <T> Sequence<T>.firstOrNone(predicate: (T) -> Boolean): Optional<T> {
  * non-empty sequence, including when the last element in the sequence has a "special" value (like `null` or [None]).
  */
 fun <T> Sequence<T>.lastOrNone(): Optional<T> {
+    // Could be implemented thus:
+    //     var ret: Optional<T> = None
+    //     for (element in this) ret = Value(element)
+    //     return ret
+    // , but that would create a Value instance for each element in the sequence.
     val iterator = iterator()
     if (!iterator.hasNext()) return None
     var ret = iterator.next()
@@ -60,6 +65,11 @@ fun <T> Sequence<T>.lastOrNone(): Optional<T> {
  * [None]).
  */
 fun <T> Sequence<T>.lastOrNone(predicate: (T) -> Boolean): Optional<T> {
+    // Could be implemented thus:
+    //     var ret: Optional<T> = None
+    //     for (element in this) if (predicate(element)) ret = Value(element)
+    //     return ret
+    // , but that would create a Value instance for each matching element.
     var ret: T? = null
     var found = false
     for (element in this) if (predicate(element)) {
