@@ -267,7 +267,7 @@ the underlying value does not satisfy a given predicate (or does satisfy the giv
 ### Testing
 The sister library [`com.tomuvak.optional-test`] provides some utilities
 designed to facilitate testing code which uses the `Optional` type, specifically assertions over values of the
-`Optional` type. [The test suite](src/commonTest/kotlin/OptionalTest.kt) makes use of some of them.
+`Optional` type. [The test suite](src/commonTest/kotlin/) makes use of some of them.
 
 [`com.tomuvak.optional-type`]: https://github.com/tomuvak/optional-type
 [`com.tomuvak.optional-test`]: https://github.com/tomuvak/optional-test
