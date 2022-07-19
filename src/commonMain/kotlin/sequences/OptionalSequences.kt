@@ -1,5 +1,6 @@
-package com.tomuvak.optional
+package com.tomuvak.optional.sequences
 
+import com.tomuvak.optional.Optional
 import com.tomuvak.optional.Optional.None
 import com.tomuvak.optional.Optional.Value
 

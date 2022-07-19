@@ -1,7 +1,9 @@
-package com.tomuvak.optional
+package com.tomuvak.optional.sequences
 
+import com.tomuvak.optional.Optional
 import com.tomuvak.optional.Optional.None
 import com.tomuvak.optional.Optional.Value
+import com.tomuvak.optional.then
 
 /**
  * Returns the first element of the receiver sequence [this] wrapped in a [Value], or [None] if the sequence is empty.
