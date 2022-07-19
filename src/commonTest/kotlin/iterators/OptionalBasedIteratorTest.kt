@@ -1,5 +1,6 @@
-package com.tomuvak.optional
+package com.tomuvak.optional.iterators
 
+import com.tomuvak.optional.Optional
 import com.tomuvak.testing.assertions.scriptedProvider
 import kotlin.test.*
 

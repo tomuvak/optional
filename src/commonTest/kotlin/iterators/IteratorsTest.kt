@@ -1,4 +1,4 @@
-package com.tomuvak.optional
+package com.tomuvak.optional.iterators
 
 import com.tomuvak.optional.test.assertNone
 import com.tomuvak.optional.test.assertValue

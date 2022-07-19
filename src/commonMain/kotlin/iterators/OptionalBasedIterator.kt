@@ -1,7 +1,10 @@
-package com.tomuvak.optional
+package com.tomuvak.optional.iterators
 
+import com.tomuvak.optional.Optional
 import com.tomuvak.optional.Optional.None
 import com.tomuvak.optional.Optional.Value
+import com.tomuvak.optional.forcedValue
+import com.tomuvak.optional.or
 
 /**
  * An alternative to the standard library's [Iterator] interface, based on a single [nextOrNone] function rather than
