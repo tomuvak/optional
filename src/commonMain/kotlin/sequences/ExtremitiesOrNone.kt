@@ -29,9 +29,7 @@ fun <T> Sequence<T>.firstOrNone(): Optional<T> {
  * [None]).
  */
 fun <T> Sequence<T>.firstOrNone(predicate: (T) -> Boolean): Optional<T> {
-    for (element in this)
-        if (predicate(element))
-            return Value(element)
+    for (element in this) if (predicate(element)) return Value(element)
     return None
 }
 
@@ -64,11 +62,10 @@ fun <T> Sequence<T>.lastOrNone(): Optional<T> {
 fun <T> Sequence<T>.lastOrNone(predicate: (T) -> Boolean): Optional<T> {
     var ret: T? = null
     var found = false
-    for (element in this)
-        if (predicate(element)) {
-            ret = element
-            found = true
-        }
+    for (element in this) if (predicate(element)) {
+        ret = element
+        found = true
+    }
     return found.then @Suppress("UNCHECKED_CAST") { ret as T }
 }
 

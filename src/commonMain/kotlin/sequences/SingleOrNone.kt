@@ -30,12 +30,11 @@ fun <T> Sequence<T>.singleOrNoneIfEmpty(): Optional<T> {
 fun <T> Sequence<T>.singleOrNoneIfNone(predicate: (T) -> Boolean): Optional<T> {
     var ret: T? = null
     var found = false
-    for (element in this)
-        if (predicate(element)) {
-            if (found) throw IllegalArgumentException("Sequence contains more than one matching element.")
-            found = true
-            ret = element
-        }
+    for (element in this) if (predicate(element)) {
+        if (found) throw IllegalArgumentException("Sequence contains more than one matching element.")
+        found = true
+        ret = element
+    }
     return found.then @Suppress("UNCHECKED_CAST") { ret as T }
 }
 
@@ -65,12 +64,11 @@ fun <T> Sequence<T>.singleOrNoneIfMultiple(): Optional<T> {
 fun <T> Sequence<T>.singleOrNoneIfMultiple(predicate: (T) -> Boolean): Optional<T> {
     var ret: T? = null
     var found = false
-    for (element in this)
-        if (predicate(element)) {
-            if (found) return None
-            found = true
-            ret = element
-        }
+    for (element in this) if (predicate(element)) {
+        if (found) return None
+        found = true
+        ret = element
+    }
     if (!found) throw NoSuchElementException("Sequence contains no element matching the predicate.")
     @Suppress("UNCHECKED_CAST") return Value(ret as T)
 }
@@ -105,11 +103,10 @@ fun <T> Sequence<T>.singleOrNoneIfEmptyOrMultiple(): Optional<T> {
 fun <T> Sequence<T>.singleOrNoneIfNoneOrMultiple(predicate: (T) -> Boolean): Optional<T> {
     var ret: T? = null
     var found = false
-    for (element in this)
-        if (predicate(element)) {
-            if (found) return None
-            found = true
-            ret = element
-        }
+    for (element in this) if (predicate(element)) {
+        if (found) return None
+        found = true
+        ret = element
+    }
     return found.then @Suppress("UNCHECKED_CAST") { ret as T }
 }
