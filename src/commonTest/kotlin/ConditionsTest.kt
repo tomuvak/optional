@@ -16,4 +16,9 @@ class ConditionsTest {
 
     @Test fun ifSatisfiesWhenDoesNotSatisfy() = assertNone(3.ifSatisfies(scriptedFunction(3 to false)))
     @Test fun ifSatisfiesWhenSatisfies() = assertValue(3, 3.ifSatisfies(scriptedFunction(3 to true)))
+
+    @Test fun ifIsWhenIsnt() = assertNone(3.ifIs<String>())
+    @Test fun ifIsWhenNullAndIsnt() = assertNone(null.ifIs<Int>())
+    @Test fun ifIsWhenIs() = assertValue(3, (3 as Any).ifIs<Int>())
+    @Test fun ifIsWhenNullAndIs() = assertValue(null, (null as String?).ifIs<Int?>())
 }

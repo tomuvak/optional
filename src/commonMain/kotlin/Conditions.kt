@@ -7,3 +7,4 @@ fun <T> Boolean.then(value: T): Optional<T> = if (this) Value(value) else None
 fun <T> Boolean.then(valueProvider: () -> T): Optional<T> = if (this) Value(valueProvider()) else None
 
 fun <T> T.ifSatisfies(predicate: (T) -> Boolean): Optional<T> = if (predicate(this)) Value(this) else None
+inline fun <reified T> Any?.ifIs(): Optional<T> = if (this is T) Value(this) else None
