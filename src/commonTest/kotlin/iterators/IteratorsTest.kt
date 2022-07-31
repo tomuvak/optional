@@ -12,7 +12,7 @@ class IteratorsTest {
     private lateinit var mockHasNext: () -> Boolean
     private lateinit var mockNext: () -> Int
 
-    private var iterator: Iterator<Int> = object : Iterator<Int> {
+    private val iterator: Iterator<Int> = object : Iterator<Int> {
         override fun hasNext(): Boolean = mockHasNext()
         override fun next(): Int = mockNext()
     }
