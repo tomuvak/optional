@@ -32,6 +32,12 @@ class ContainerTest {
     @Test fun asEmptySequence() = assertEquals(emptyList(), None.asSequence().toList())
     @Test fun asSingletonSequence() = assertEquals(listOf(3), Value(3).asSequence().toList())
 
+    @Test fun asEmptyIterable() = assertEquals(emptyList(), None.asIterable().toList())
+    @Test fun asSingletonIterable() = assertEquals(listOf(3), Value(3).asIterable().toList())
+
     @Test fun toEmptyList() = assertEquals(emptyList(), None.toList())
     @Test fun toSingletonList() = assertEquals(listOf(3), Value(3).toList())
+
+    @Test fun toEmptyTypedArray() = assertEquals(emptyList(), (None as Optional<Int>).toTypedArray().toList())
+    @Test fun toSingletonTypedArray() = assertEquals(listOf(3), Value(3).toTypedArray().toList())
 }

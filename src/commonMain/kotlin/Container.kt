@@ -12,4 +12,6 @@ fun <T> Optional<T>.filterNot(predicate: (T) -> Boolean): Optional<T> =
     switch(None) { if (predicate(it)) None else this }
 
 fun <T> Optional<T>.asSequence(): Sequence<T> = switch(::emptySequence) { sequenceOf(it) }
+fun <T> Optional<T>.asIterable(): Iterable<T> = asSequence().asIterable()
 fun <T> Optional<T>.toList(): List<T> = switch(::emptyList) { listOf(it) }
+inline fun <reified T> Optional<T>.toTypedArray(): Array<T> = toList().toTypedArray()
