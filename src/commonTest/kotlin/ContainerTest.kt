@@ -29,6 +29,12 @@ class ContainerTest {
     @Test fun filterNotFalseValue() = assertValue(3, Value(3).filterNot(scriptedFunction(3 to false)))
     @Test fun filterNotTrueValue() = assertNone(Value(3).filterNot(scriptedFunction(3 to true)))
 
+    @Test fun filterIsInstanceNone() = assertNone((None as Optional<Any>).filterIsInstance<Any>())
+    @Test fun filterIsInstanceInstance() = assertValue(3, Value(3 as Any).filterIsInstance<Int>())
+    @Test fun filterIsInstanceNotInstance() = assertNone(Value(3 as Any).filterIsInstance<String>())
+    @Test fun filterIsInstanceNullInstance() = assertValue(null, Value(null as Int?).filterIsInstance<String?>())
+    @Test fun filterIsInstanceNullNotInstance() = assertNone(Value(null as Int?).filterIsInstance<Int>())
+
     @Test fun asEmptySequence() = assertEquals(emptyList(), None.asSequence().toList())
     @Test fun asSingletonSequence() = assertEquals(listOf(3), Value(3).asSequence().toList())
 
