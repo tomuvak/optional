@@ -22,9 +22,12 @@ fun interface OptionalBasedIterator<out T> { fun nextOrNone(): Optional<T> }
 /**
  * Returns an [Iterator] which yields the same elements as the receiver [Optional]-based iterator [this].
  */
-fun <T> OptionalBasedIterator<T>.toIterator(): Iterator<T> = OptionalBasedIteratorBasedIterator(this)
+fun <T> OptionalBasedIterator<T>.toIterator(): Iterator<T> =
+    if (this is IteratorBasedOptionalBasedIterator<T>) underlying else OptionalBasedIteratorBasedIterator(this)
 
-private class OptionalBasedIteratorBasedIterator<out T>(private val underlying: OptionalBasedIterator<T>): Iterator<T> {
+private class OptionalBasedIteratorBasedIterator<out T>(
+    internal val underlying: OptionalBasedIterator<T>
+): Iterator<T> {
     private var cachedNextOrNone: Optional<Optional<T>> = None
 
     private fun nextOrNone(): Optional<T> =
@@ -37,4 +40,9 @@ private class OptionalBasedIteratorBasedIterator<out T>(private val underlying: 
 /**
  * Returns an [OptionalBasedIterator] which yields the same elements as the receiver iterator [this].
  */
-fun <T> Iterator<T>.toOptionalBased(): OptionalBasedIterator<T> = OptionalBasedIterator(::nextOrNone)
+fun <T> Iterator<T>.toOptionalBased(): OptionalBasedIterator<T> =
+    if (this is OptionalBasedIteratorBasedIterator<T>) underlying else IteratorBasedOptionalBasedIterator(this)
+
+private class IteratorBasedOptionalBasedIterator<out T>(
+    internal val underlying: Iterator<T>
+): OptionalBasedIterator<T> { override fun nextOrNone(): Optional<T> = underlying.nextOrNone() }

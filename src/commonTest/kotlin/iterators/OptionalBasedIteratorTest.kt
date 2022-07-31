@@ -53,6 +53,14 @@ class OptionalBasedIteratorTest {
         assertSame(anotherFailure, assertFails { iterator.next() })
     }
 
+    @Test fun toIteratorReturnsOriginal() {
+        val iterator = object : Iterator<Int> {
+            override fun hasNext(): Boolean = mootProvider()
+            override fun next(): Int = mootProvider()
+        }
+        assertSame(iterator, iterator.toOptionalBased().toIterator())
+    }
+
     @Test fun toOptionalBased() {
         lateinit var mockHasNext: () -> Boolean
         lateinit var mockNext: () -> Int
@@ -100,5 +108,10 @@ class OptionalBasedIteratorTest {
         mockHasNext = scriptedProvider(true)
         mockNext = { throw failureInNext }
         assertSame(failureInNext, assertFails { optionalBasedIterator.nextOrNone() })
+    }
+
+    @Test fun toOptionalBasedReturnsOriginal() {
+        val optionalBasedIterator = OptionalBasedIterator<Int>(mootProvider)
+        assertSame(optionalBasedIterator, optionalBasedIterator.toIterator().toOptionalBased())
     }
 }
