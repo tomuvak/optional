@@ -33,3 +33,8 @@ private class OptionalBasedIteratorBasedIterator<out T>(private val underlying: 
     override fun hasNext(): Boolean = nextOrNone() != None
     override fun next(): T = nextOrNone().also { cachedNextOrNone = None }.forcedValue { NoSuchElementException() }
 }
+
+/**
+ * Returns an [OptionalBasedIterator] which yields the same elements as the receiver iterator [this].
+ */
+fun <T> Iterator<T>.toOptionalBased(): OptionalBasedIterator<T> = OptionalBasedIterator(::nextOrNone)

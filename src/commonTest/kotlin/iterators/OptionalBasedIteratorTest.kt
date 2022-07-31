@@ -1,6 +1,9 @@
 package com.tomuvak.optional.iterators
 
 import com.tomuvak.optional.Optional
+import com.tomuvak.optional.test.assertNone
+import com.tomuvak.optional.test.assertValue
+import com.tomuvak.testing.assertions.mootProvider
 import com.tomuvak.testing.assertions.scriptedProvider
 import kotlin.test.*
 
@@ -48,5 +51,54 @@ class OptionalBasedIteratorTest {
         val anotherFailure = Exception("another failure")
         mockNextOrNone = { throw anotherFailure }
         assertSame(anotherFailure, assertFails { iterator.next() })
+    }
+
+    @Test fun toOptionalBased() {
+        lateinit var mockHasNext: () -> Boolean
+        lateinit var mockNext: () -> Int
+
+        val iterator: Iterator<Int> = object : Iterator<Int> {
+            override fun hasNext(): Boolean = mockHasNext()
+            override fun next(): Int = mockNext()
+        }
+
+        val optionalBasedIterator = iterator.toOptionalBased()
+
+        fun verifyNext(value: Int) {
+            mockHasNext = scriptedProvider(true)
+            mockNext = scriptedProvider(value)
+            assertValue(value, optionalBasedIterator.nextOrNone())
+        }
+
+        fun verifyNoNext() {
+            mockHasNext = scriptedProvider(false)
+            mockNext = mootProvider
+            assertNone(optionalBasedIterator.nextOrNone())
+        }
+
+        verifyNext(3)
+        verifyNext(5)
+        verifyNext(0)
+        verifyNext(-7)
+        verifyNext(-7)
+        verifyNoNext()
+
+        // Typical use cases do not include further iteration after exhaustion, but it is not impossible
+        verifyNext(-1)
+        verifyNext(0)
+        verifyNext(0)
+        verifyNext(1)
+        verifyNoNext()
+
+        // Verify expected behavior also in cases of failure
+        val failureInHasNext = Exception("Failure in hasNext()")
+        mockHasNext = { throw failureInHasNext }
+        mockNext = mootProvider
+        assertSame(failureInHasNext, assertFails { optionalBasedIterator.nextOrNone() })
+
+        val failureInNext = Exception("Failure in next()")
+        mockHasNext = scriptedProvider(true)
+        mockNext = { throw failureInNext }
+        assertSame(failureInNext, assertFails { optionalBasedIterator.nextOrNone() })
     }
 }

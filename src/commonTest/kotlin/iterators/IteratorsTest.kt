@@ -18,12 +18,14 @@ class IteratorsTest {
     }
 
     @Test fun nextOrNoneReturnsNone() {
-        givenNoNext()
+        mockHasNext = scriptedProvider(false)
+        mockNext = mootProvider
         assertNone(iterator.nextOrNone())
     }
 
     @Test fun nextOrNoneReturnsNext() {
-        givenNext(3)
+        mockHasNext = scriptedProvider(true)
+        mockNext = scriptedProvider(3)
         assertValue(3, iterator.nextOrNone())
     }
 
@@ -39,54 +41,5 @@ class IteratorsTest {
         mockHasNext = scriptedProvider(true)
         mockNext = { throw failure }
         assertSame(failure, assertFails { iterator.nextOrNone() })
-    }
-
-    @Test fun toOptionalBased() {
-        val optionalBasedIterator = iterator.toOptionalBased()
-
-        fun verifyNext(value: Int) {
-            givenNext(value)
-            assertValue(value, optionalBasedIterator.nextOrNone())
-        }
-
-        fun verifyNoNext() {
-            givenNoNext()
-            assertNone(optionalBasedIterator.nextOrNone())
-        }
-
-        verifyNext(3)
-        verifyNext(5)
-        verifyNext(0)
-        verifyNext(-7)
-        verifyNext(-7)
-        verifyNoNext()
-
-        // Typical use cases do not include further iteration after exhaustion, but it is not impossible
-        verifyNext(-1)
-        verifyNext(0)
-        verifyNext(0)
-        verifyNext(1)
-        verifyNoNext()
-
-        // Verify expected behavior also in cases of failure
-        val failureInHasNext = Exception("Failure in hasNext()")
-        mockHasNext = { throw failureInHasNext }
-        mockNext = mootProvider
-        assertSame(failureInHasNext, assertFails { optionalBasedIterator.nextOrNone() })
-
-        val failureInNext = Exception("Failure in next()")
-        mockHasNext = scriptedProvider(true)
-        mockNext = { throw failureInNext }
-        assertSame(failureInNext, assertFails { optionalBasedIterator.nextOrNone() })
-    }
-
-    private fun givenNoNext() {
-        mockHasNext = scriptedProvider(false)
-        mockNext = mootProvider
-    }
-
-    private fun givenNext(value: Int) {
-        mockHasNext = scriptedProvider(true)
-        mockNext = scriptedProvider(value)
     }
 }
