@@ -29,6 +29,19 @@ fun <T> Sequence<Optional<T>>.values(): Sequence<T> = filterIsInstance<Value<T>>
 fun <T> Sequence<Optional<T>>.valuesUntilFirstNone(): Sequence<T> = takeWhile { it is Value }.values()
 
 /**
+ * Returns a list of the values wrapped in the [Value] elements (if any) of the receiver sequence [this] which appear
+ * after the last [None] (or throughout the entire sequence if there is no [None]).
+ *
+ * This operation is _terminal_ (as for a general sequence this cannot be computed without iterating over all of the
+ * elements. For this reason it also returns the result as a list rather than as a sequence).
+ */
+fun <T> Sequence<Optional<T>>.valuesAfterLastNone(): List<T> {
+    val buffer = mutableListOf<T>()
+    for (element in this) if (element is Value) buffer.add(element.value) else buffer.clear()
+    return buffer
+}
+
+/**
  * Returns [None] if the receiver sequence [this] contains at least one [None], or a list, wrapped in a [Value], of all
  * values wrapped in the sequence's [Value] elements if the sequence consists solely of [Value] elements.
  *

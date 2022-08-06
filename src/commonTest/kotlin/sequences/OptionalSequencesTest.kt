@@ -7,6 +7,7 @@ import com.tomuvak.optional.test.assertNone
 import com.tomuvak.optional.test.assertValue
 import com.tomuvak.testing.assertions.*
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class OptionalSequencesTest {
     @Test fun valuesOfEmptySequence() =
@@ -48,6 +49,26 @@ class OptionalSequencesTest {
         sequenceOf(Value(1), Value(2), Value(3)).testLazyIntermediateOperation({ valuesUntilFirstNone() }) {
             assertStartsWith(1, 2, 3)
         }
+
+    @Test fun valuesAfterLastNoneOfEmptySequence() = emptySequence<Optional<Int>>().testTerminalOperation({
+        valuesAfterLastNone()
+    }) { assertEquals(emptyList(), it) }
+    @Test fun valuesAfterLastNoneOfSingletonNone() = sequenceOf<Optional<Int>>(None).testTerminalOperation({
+        valuesAfterLastNone()
+    }) { assertEquals(emptyList(), it) }
+    @Test fun valuesAfterLastNoneOfSingletonValue() =
+        sequenceOf(Value(3)).testTerminalOperation({ valuesAfterLastNone() }) { assertEquals(listOf(3), it) }
+    @Test fun valuesAfterLastNoneWhenNoNones() = sequenceOf(Value(1), Value(2), Value(3)).testTerminalOperation({
+        valuesAfterLastNone()
+    }) { assertEquals(listOf(1, 2, 3), it) }
+    @Test fun valuesAfterLastNoneWhenMixedOptionals() =
+        sequenceOf(None, Value(1), None, Value(2), None, Value(3), Value(4)).testTerminalOperation({
+            valuesAfterLastNone()
+        }) { assertEquals(listOf(3, 4), it) }
+    @Test fun valuesAfterLastNoneWhenMixedOptionalNullables() =
+        sequenceOf(Value(1), Value(null), None, Value(2), Value(null), Value(3)).testTerminalOperation({
+            valuesAfterLastNone()
+        }) { assertEquals(listOf(2, null, 3), it) }
 
     @Test fun valuesIfAllWhenEmpty() = emptySequence<Optional<Int>>().testTerminalOperation({ valuesIfAll() }) {
         assertValue(emptyList(), it)
