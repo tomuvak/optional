@@ -51,11 +51,14 @@ For example, when `k` is some value of type `K` and `m` is of type `Map<K, V>`, 
 [`m[k]`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/get.html) to be `null`?
 If `V` is a non-null type it means `m` does not contain the key `k`, but if `V` is a nullable type then this does not
 distinguish between `m` not containing the key `k` and `m` containing the key `k` with an associated value of `null`.
+(See [`Map<K, V>.getOrNone(key: K): Optional<V>`](src/commonMain/kotlin/Maps.kt) for an alternative using `Optional`.)
 
 For another example,
 [`generateSequence`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.sequences/generate-sequence.html), which uses
 `null`s to signal end of sequence, cannot be used to generate sequences containing `null`s (and, in fact, is declared to
-only generate sequences of non-null types).
+only generate sequences of non-null types). (Using `Optional`, one can pass a function to `generateSequence` which
+returns the desired sequence elements wrapped in `Value`s and signals the end of the sequence by returning `None`, and
+then call [`.valuesUntilFirstNone()`](src/commonMain/kotlin/sequences/OptionalSequences.kt) on the result.)
 
 In contrast, the `Optional` type can be nested (allowing types such as `Optional<Optional<T>>`, and, indeed,
 `Optional<Optional<Optional<T>>>`, `Optional<Optional<Optional<Optional<T>>>>` etc.), allowing analogous usages to the
