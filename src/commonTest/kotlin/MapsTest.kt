@@ -20,26 +20,27 @@ class MapsTest {
 
     @Test fun inNonNullableMapGetOrNoneGets() = assertValue(Value, nonNullableMap.getOrNone(Key))
     @Test fun inNonNullableMapGetOrNoneOnlyRequiresOneCallToGet() =
-        assertValue(Value, mockMap<_, String>(mootFunction, scriptedFunction(Key to Value)).getOrNone(Key))
+        assertValue(Value, oneCallMap<String>(Value).getOrNone(Key))
     @Test fun inNonNullableMapGetOrNoneReturnsNone() = assertNone(nonNullableMap.getOrNone(NonExistingKey))
     @Test fun inNonNullableMapGetOrNoneOnlyRequiresOneCallToReturnNone() =
-        assertNone(mockMap<_, String>(mootFunction, scriptedFunction(Key to null)).getOrNone(Key))
+        assertNone(oneCallMap<String>(null).getOrNone(Key))
 
     @Test fun inNullableMapGetOrNoneGets() = assertValue(Value, nullableMap.getOrNone(Key))
     @Test fun inNullableMapGetOrNoneOnlyRequiresOneCallToGetNonNull() =
-        assertValue(Value, mockMap<_, String?>(mootFunction, scriptedFunction(Key to Value)).getOrNone(Key))
+        assertValue(Value, oneCallMap<String?>(Value).getOrNone(Key))
     @Test fun inNullableMapGetOrNoneGetsNull() = assertValue(null, nullableMap.getOrNone(KeyWithNullValue))
     @Test fun inNullableMapGetOrNoneReturnsNone() = assertNone(nullableMap.getOrNone(NonExistingKey))
 
-    private fun <K, V> mockMap(containsKey: (K) -> Boolean, get: (K) -> V?): Map<K, V> = object : Map<K, V> {
-        override val entries: Set<Map.Entry<K, V>> get() = mootProvider()
-        override val keys: Set<K> get() = mootProvider()
+    private fun <V> oneCallMap(valueOrNull: V?): Map<String, V> = object : Map<String, V> {
+        private val getFunction: (String) -> V? = scriptedFunction(Key to valueOrNull)
+        override fun get(key: String): V? = getFunction(key)
+
+        override val entries: Set<Map.Entry<String, V>> get() = mootProvider()
+        override val keys: Set<String> get() = mootProvider()
         override val size: Int get() = mootProvider()
         override val values: Collection<V> get() = mootProvider()
         override fun isEmpty(): Boolean = mootProvider()
         override fun containsValue(value: V): Boolean = mootFunction(value)
-
-        override fun containsKey(key: K): Boolean = containsKey(key)
-        override fun get(key: K): V? = get(key)
+        override fun containsKey(key: String): Boolean = mootFunction(key)
     }
 }
