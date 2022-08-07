@@ -20,14 +20,14 @@ class MapsTest {
 
     @Test fun inNonNullableMapGetOrNoneGets() = assertValue(Value, nonNullableMap.getOrNone(Key))
     @Test fun inNonNullableMapGetOrNoneOnlyRequiresOneCallToGet() =
-        assertValue("value", mockMap<_, String>(mootFunction, scriptedFunction("key" to "value")).getOrNone("key"))
+        assertValue(Value, mockMap<_, String>(mootFunction, scriptedFunction(Key to Value)).getOrNone(Key))
     @Test fun inNonNullableMapGetOrNoneReturnsNone() = assertNone(nonNullableMap.getOrNone(NonExistingKey))
     @Test fun inNonNullableMapGetOrNoneOnlyRequiresOneCallToReturnNone() =
-        assertNone(mockMap<_, String>(mootFunction, scriptedFunction("key" to null)).getOrNone("key"))
+        assertNone(mockMap<_, String>(mootFunction, scriptedFunction(Key to null)).getOrNone(Key))
 
     @Test fun inNullableMapGetOrNoneGets() = assertValue(Value, nullableMap.getOrNone(Key))
     @Test fun inNullableMapGetOrNoneOnlyRequiresOneCallToGetNonNull() =
-        assertValue("value", mockMap<_, String?>(mootFunction, scriptedFunction("key" to "value")).getOrNone("key"))
+        assertValue(Value, mockMap<_, String?>(mootFunction, scriptedFunction(Key to Value)).getOrNone(Key))
     @Test fun inNullableMapGetOrNoneGetsNull() = assertValue(null, nullableMap.getOrNone(KeyWithNullValue))
     @Test fun inNullableMapGetOrNoneReturnsNone() = assertNone(nullableMap.getOrNone(NonExistingKey))
 
