@@ -9,26 +9,26 @@ import kotlin.test.Test
 
 class MapsTest {
     companion object {
-        private const val ExistingKey: String = "ExistingKey"
-        private const val ValueForExistingKey: String = "ValueForExistingKey"
-        private const val KeyWithValueOfNull: String = "KeyWithValueOfNull"
+        private const val Key: String = "Key"
+        private const val Value: String = "Value"
+        private const val KeyWithNullValue: String = "KeyWithNullValue"
         private const val NonExistingKey: String = "NonExistingKey"
     }
 
-    private val nonNullableMap = mapOf(ExistingKey to ValueForExistingKey)
-    private val nullableMap = mapOf(ExistingKey to ValueForExistingKey, KeyWithValueOfNull to null)
+    private val nonNullableMap = mapOf(Key to Value)
+    private val nullableMap = mapOf(Key to Value, KeyWithNullValue to null)
 
-    @Test fun inNonNullableMapGetOrNoneGets() = assertValue(ValueForExistingKey, nonNullableMap.getOrNone(ExistingKey))
+    @Test fun inNonNullableMapGetOrNoneGets() = assertValue(Value, nonNullableMap.getOrNone(Key))
     @Test fun inNonNullableMapGetOrNoneOnlyRequiresOneCallToGet() =
         assertValue("value", mockMap<_, String>(mootFunction, scriptedFunction("key" to "value")).getOrNone("key"))
     @Test fun inNonNullableMapGetOrNoneReturnsNone() = assertNone(nonNullableMap.getOrNone(NonExistingKey))
     @Test fun inNonNullableMapGetOrNoneOnlyRequiresOneCallToReturnNone() =
         assertNone(mockMap<_, String>(mootFunction, scriptedFunction("key" to null)).getOrNone("key"))
 
-    @Test fun inNullableMapGetOrNoneGets() = assertValue(ValueForExistingKey, nullableMap.getOrNone(ExistingKey))
+    @Test fun inNullableMapGetOrNoneGets() = assertValue(Value, nullableMap.getOrNone(Key))
     @Test fun inNullableMapGetOrNoneOnlyRequiresOneCallToGetNonNull() =
         assertValue("value", mockMap<_, String?>(mootFunction, scriptedFunction("key" to "value")).getOrNone("key"))
-    @Test fun inNullableMapGetOrNoneGetsNull() = assertValue(null, nullableMap.getOrNone(KeyWithValueOfNull))
+    @Test fun inNullableMapGetOrNoneGetsNull() = assertValue(null, nullableMap.getOrNone(KeyWithNullValue))
     @Test fun inNullableMapGetOrNoneReturnsNone() = assertNone(nullableMap.getOrNone(NonExistingKey))
 
     private fun <K, V> mockMap(containsKey: (K) -> Boolean, get: (K) -> V?): Map<K, V> = object : Map<K, V> {
