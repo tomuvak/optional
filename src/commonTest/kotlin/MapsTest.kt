@@ -15,8 +15,8 @@ class MapsTest {
         private const val NonExistingKey: String = "NonExistingKey"
     }
 
-    private val nonNullableMap: Map<String, String> = mapOf(Key to Value)
-    private val nullableMap: Map<String, String?> = mapOf(Key to Value, KeyWithNullValue to null)
+    private val nonNullableMap: Map<String, String> get() = mapOf(Key to Value)
+    private val nullableMap: Map<String, String?> get() = mapOf(Key to Value, KeyWithNullValue to null)
 
     @Test fun inNonNullableMapGetOrNoneGets() = assertValue(Value, nonNullableMap.getOrNone(Key))
     @Test fun inNonNullableMapGetOrNoneOnlyRequiresOneCallToGet() =
