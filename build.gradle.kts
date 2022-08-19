@@ -15,7 +15,7 @@ fun local(key: String): String? = localProperties.getProperty(key)
 repositories {
     mavenCentral()
     maven {
-        url = uri("https://maven.pkg.github.com/tomuvak/optional-type")
+        url = uri("https://maven.pkg.github.com/tomuvak/testing-assertions")
         credentials {
             username = local("githubUser")
             password = local("githubToken")
@@ -40,14 +40,9 @@ kotlin {
             }
         }
     }
-    val hostOs = System.getProperty("os.name")
-    val isMingwX64 = hostOs.startsWith("Windows")
-    val nativeTarget = when {
-        hostOs == "Mac OS X" -> macosX64("native")
-        hostOs == "Linux" -> linuxX64("native")
-        isMingwX64 -> mingwX64("native")
-        else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
-    }
+    linuxX64()
+    macosX64()
+    mingwX64()
 
     sourceSets {
         val commonMain by getting {
@@ -58,16 +53,25 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
-                implementation("com.tomuvak.testing-assertions:testing-assertions:0.0.4")
-                implementation("com.tomuvak.optional-test:optional-test:0.0.3")
+                implementation("com.tomuvak.testing-assertions:testing-assertions:0.0.6")
+                implementation("com.tomuvak.optional-test:optional-test:0.0.4")
             }
         }
+
         val jvmMain by getting
         val jvmTest by getting
         val jsMain by getting
         val jsTest by getting
-        val nativeMain by getting
-        val nativeTest by getting
+
+        val nativeMain by creating { dependsOn(commonMain) }
+        val nativeTest by creating { dependsOn(commonTest) }
+
+        val linuxX64Main by getting { dependsOn(nativeMain) }
+        val linuxX64Test by getting { dependsOn(nativeTest) }
+        val macosX64Main by getting { dependsOn(nativeMain) }
+        val macosX64Test by getting { dependsOn(nativeTest) }
+        val mingwX64Main by getting { dependsOn(nativeMain) }
+        val mingwX64Test by getting { dependsOn(nativeTest) }
     }
 }
 
