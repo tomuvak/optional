@@ -2,9 +2,9 @@ package com.tomuvak.optional
 
 import com.tomuvak.optional.test.assertNone
 import com.tomuvak.optional.test.assertValue
-import com.tomuvak.testing.assertions.mootFunction
-import com.tomuvak.testing.assertions.mootProvider
-import com.tomuvak.testing.assertions.scriptedFunction
+import com.tomuvak.testing.mootFunction
+import com.tomuvak.testing.mootProvider
+import com.tomuvak.testing.scriptedFunction
 import kotlin.test.Test
 
 class MapsTest {

@@ -2,9 +2,9 @@ package com.tomuvak.optional
 
 import com.tomuvak.optional.test.assertNone
 import com.tomuvak.optional.test.assertValue
-import com.tomuvak.testing.assertions.mootProvider
-import com.tomuvak.testing.assertions.scriptedFunction
-import com.tomuvak.testing.assertions.scriptedProvider
+import com.tomuvak.testing.mootProvider
+import com.tomuvak.testing.scriptedFunction
+import com.tomuvak.testing.scriptedProvider
 import kotlin.test.Test
 
 class ConditionsTest {

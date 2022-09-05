@@ -5,7 +5,7 @@ import com.tomuvak.optional.Optional.None
 import com.tomuvak.optional.Optional.Value
 import com.tomuvak.optional.test.assertNone
 import com.tomuvak.optional.test.assertValue
-import com.tomuvak.testing.assertions.*
+import com.tomuvak.testing.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

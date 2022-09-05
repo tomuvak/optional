@@ -3,8 +3,8 @@ package com.tomuvak.optional.iterators
 import com.tomuvak.optional.Optional
 import com.tomuvak.optional.test.assertNone
 import com.tomuvak.optional.test.assertValue
-import com.tomuvak.testing.assertions.mootProvider
-import com.tomuvak.testing.assertions.scriptedProvider
+import com.tomuvak.testing.mootProvider
+import com.tomuvak.testing.scriptedProvider
 import kotlin.test.*
 
 class OptionalBasedIteratorTest {

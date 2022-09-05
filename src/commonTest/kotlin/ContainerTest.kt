@@ -4,8 +4,8 @@ import com.tomuvak.optional.Optional.None
 import com.tomuvak.optional.Optional.Value
 import com.tomuvak.optional.test.assertNone
 import com.tomuvak.optional.test.assertValue
-import com.tomuvak.testing.assertions.mootFunction
-import com.tomuvak.testing.assertions.scriptedFunction
+import com.tomuvak.testing.mootFunction
+import com.tomuvak.testing.scriptedFunction
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
